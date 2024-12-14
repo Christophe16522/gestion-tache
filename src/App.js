@@ -22,10 +22,11 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="Container">
       <h1>Gestionnaire de Tâches</h1>
       <div>
         <input
+          className="form-control"
           type="text"
           value={task}
           onChange={(e) => setTask(e.target.value)}
