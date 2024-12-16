@@ -1,34 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+
 function AjoutTache() {
+  const [titre, setTitre] = useState(""); //Etat pour la tache actuelle
   const [task, setTask] = useState(""); //Etat pour la tache actuelle
   const [tasks, setTasks] = useState([]); //Liste des taches
 
   const now = new Date();
 
-  const addTask = () => {
+  const tasksCollection = collection(db, "tasks");
+
+  useEffect(() => {
+    //Charger les taches depuis firestrore
+    const fetchTasks = async () => {
+      const data = await getDocs(tasksCollection);
+      setTasks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    fetchTasks();
+  }, [tasksCollection]);
+
+  const addTask = async () => {
     if (task.trim() !== "") {
-      setTasks([
-        ...tasks,
-        { text: task, completed: false, dateCreate: now.toLocaleString() },
-      ]);
-      setTask(""); //reinitialiser le champs
+      const newTask = {
+        titre: titre,
+        text: task,
+        completed: false,
+        dateCreate: now.toDateString(),
+      };
+      try {
+        await addDoc(tasksCollection, newTask);
+        setTasks([...tasks, newTask]);
+        setTask(""); //reinitialiser le champs
+        setTitre(""); //reinitialiser le champs
+        //
+      } catch (error) {
+        alert("Erreur lors de l'ajout de la tâche:", error);
+      }
     }
   };
 
-  const removeTask = (index) => {
-    setTasks(tasks.filter((_, i) => i !== index));
+  const removeTask = async (id) => {
+    await deleteDoc(doc(db, "tasks", id));
+    setTasks(tasks.filter((t) => t.id !== id));
+    //setTasks(tasks.filter((_, i) => i !== index));
   };
 
-  const toogleComplete = (index) => {
-    setTasks(
-      tasks.map((t, i) => (i === index ? { ...t, completed: !t.completed } : t))
-    );
+  const toogleComplete = async (id) => {
+    try {
+      const taskToUpdate = tasks.find((t) => t.id === id);
+      const taskDoc = doc(db, "tasks", id);
+      await updateDoc(taskDoc, { completed: !taskToUpdate.completed });
+      setTasks(
+        tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      );
+    } catch (error) {
+      alert("Erreur lors de la mise a jour de la tâche:", error);
+    }
   };
 
   return (
     <div className="container">
       <h1>Gestionnaire de Tâches</h1>
       <div className="mb-3">
+        <input
+          className="form-control mb-3"
+          type="text"
+          value={titre}
+          onChange={(e) => setTitre(e.target.value)}
+          placeholder="Ajouter un titre"
+        />
         <input
           className="form-control mb-3"
           type="text"
@@ -40,12 +88,13 @@ function AjoutTache() {
           Ajouter
         </button>
       </div>
-      <ol class="list-group list-group-numbered">
+
+      <ol className="list-group list-group-numbered">
         {tasks.map((t, index) => (
           <React.Fragment key={index}>
             <li
               key={index}
-              onClick={() => toogleComplete(index)}
+              onClick={() => toogleComplete(t.id)}
               style={{ cursor: "pointer" }}
             >
               <span
@@ -56,26 +105,21 @@ function AjoutTache() {
                 }}
                 aria-current="true"
               >
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1"> {t.text}</h5>
+                <div className="d-flex w-100 justify-content-between">
+                  <h5 className="mb-1"> {t.titre}</h5>
                   <small>{t.dateCreate}</small>
                 </div>
-                <p class="mb-1">Some placeholder content in a paragraph.</p>
+                <p className="mb-1">{t.text}</p>
                 <button
                   className="btn btn-danger mb-3"
                   onClick={(e) => {
                     e.stopPropagation();
-                    removeTask(index);
+                    removeTask(t.id);
                   }}
                 >
                   Supprimer
                 </button>
               </span>
-              {/* <span
-              style={{ textDecoration: t.completed ? "line-through" : "none" }}
-            >
-              {t.text}
-            </span> */}
             </li>
             <br />
           </React.Fragment>
