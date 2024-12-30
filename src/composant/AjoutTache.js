@@ -8,6 +8,9 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faMinus } from "@fortawesome/free-solid-svg-icons";
 
 function AjoutTache() {
   const [titre, setTitre] = useState(""); //Etat pour la tache actuelle
@@ -50,7 +53,6 @@ function AjoutTache() {
   const removeTask = async (id) => {
     await deleteDoc(doc(db, "tasks", id));
     setTasks(tasks.filter((t) => t.id !== id));
-    //setTasks(tasks.filter((_, i) => i !== index));
   };
 
   const toogleComplete = async (id) => {
@@ -84,8 +86,13 @@ function AjoutTache() {
           onChange={(e) => setTask(e.target.value)}
           placeholder="Ajouter une tache"
         />
-        <button className="btn btn-primary mb-3" onClick={addTask}>
-          Ajouter
+        <button
+          className="btn btn-primary mb-3"
+          data-toggle="tooltip"
+          title="Ajouter la tache"
+          onClick={addTask}
+        >
+          <FontAwesomeIcon icon={faPen} />
         </button>
       </div>
 
@@ -97,29 +104,38 @@ function AjoutTache() {
               onClick={() => toogleComplete(t.id)}
               style={{ cursor: "pointer" }}
             >
-              <span
-                //  className="list-group-item list-group-item-action {{ t.completed ? 'active' : ''}}" //ato no asina an le active
-                className="list-group-item list-group-item-action"
-                style={{
-                  textDecoration: t.completed ? "line-through" : "none",
-                }}
-                aria-current="true"
-              >
-                <div className="d-flex w-100 justify-content-between">
-                  <h5 className="mb-1"> {t.titre}</h5>
-                  <small>{t.dateCreate}</small>
+              <div className="row">
+                <div className="col-8">
+                  <span
+                    className="list-group-item list-group-item-action"
+                    style={{
+                      textDecoration: t.completed ? "line-through" : "none",
+                    }}
+                    aria-current="true"
+                  >
+                    <div className="d-flex w-100 justify-content-between">
+                      <h5 className="mb-1"> {t.titre}</h5>
+                      <small>{t.dateCreate}</small>
+                    </div>
+                    <p className="mb-1">{t.text}</p>
+                    <button
+                      className="btn btn-danger mb-3"
+                      data-toggle="tooltip"
+                      title="Supprimer la tache"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeTask(t.id);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </button>
+                  </span>
                 </div>
-                <p className="mb-1">{t.text}</p>
-                <button
-                  className="btn btn-danger mb-3"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeTask(t.id);
-                  }}
-                >
-                  Supprimer
-                </button>
-              </span>
+                <div className="col-4">
+                  <p>Rapporteur : </p>
+                  <p>Responsable : </p>
+                </div>
+              </div>
             </li>
             <br />
           </React.Fragment>
