@@ -143,7 +143,7 @@ function GestionPersonel() {
             <img
               class="card-img-top"
               src="/profiltest.jpg"
-              alt="Card image"
+              alt="Card cap"
             ></img>
             <div class="card-body">
               <h4 class="card-title">John Doe</h4>
