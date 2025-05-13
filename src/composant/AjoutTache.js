@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
+import LoginGoogle from "./LoginGoogle";
 
 function AjoutTache() {
   const [titre, setTitre] = useState(""); //Etat pour la tache actuelle
@@ -68,8 +69,22 @@ function AjoutTache() {
     }
   };
 
+  const [user, setUser] = useState(null);
+
   return (
     <div className="container">
+      <h1>Connexion avec google</h1>
+      {!user ? (
+        <LoginGoogle onLogin={setUser} />
+      ) : (
+        <div>
+          <h2>Bienvenue {user.name}</h2>
+          <img src={user.picture} alt="User" />
+          <p>Email: {user.email}</p>
+          <button onClick={() => setUser(null)}>Deconnexion</button>
+        </div>
+      )}
+
       <h1>Gestionnaire de Tâches</h1>
       <div className="mb-3">
         <input
