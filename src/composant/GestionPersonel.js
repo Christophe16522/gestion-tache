@@ -8,9 +8,9 @@ import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
+  // deleteDoc,
+  // doc,
+  // updateDoc,
 } from "firebase/firestore";
 
 function GestionPersonel() {
@@ -20,11 +20,10 @@ function GestionPersonel() {
   //const [finEmbauchePersonel, setfinEmbauchePersonel] = useState(""); TODO: remove if not needed
   const [contactPersonel, setContactPersonel] = useState("");
   const [salairePersonel, setSalairePersonel] = useState("");
-  const [isActifPersonel, setisActifPersonel] = useState(""); //salarier en activite
+  const [setisActifPersonel] = useState(""); //salarier en activite
   const [personel, setPersonel] = useState([]); //Liste des personels
 
   const personelCollection = collection(db, "personel");
-
 
   //charger les personels depuis firestore
   useEffect(() => {
