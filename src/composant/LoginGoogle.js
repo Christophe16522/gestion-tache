@@ -1,5 +1,4 @@
 import { GoogleLogin } from "@react-oauth/google";
-import {jwt_decode} from "jwt-decode";
 import { jwtDecode } from "jwt-decode";
 
 function LoginGoogle({ onLogin }) { 
