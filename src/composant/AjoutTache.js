@@ -79,7 +79,7 @@ function AjoutTache() {
       ) : (
         <div>
           <h2>Bienvenue {user.name}</h2>
-          <img src={user.picture} alt="User" />
+          <img src={user.picture} alt="{user.name} + User" />
           <p>Email: {user.email}</p>
           <button onClick={() => setUser(null)}>Deconnexion</button>
         </div>

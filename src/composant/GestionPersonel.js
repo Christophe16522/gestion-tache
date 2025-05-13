@@ -17,7 +17,7 @@ function GestionPersonel() {
   const [nomPersonel, setNomPersonel] = useState("");
   const [postePersonel, setPostePersonel] = useState("");
   const [dateEmbauchePersonel, setDateEmbauchePersonel] = useState("");
-  const [finEmbauchePersonel, setfinEmbauchePersonel] = useState("");
+  //const [finEmbauchePersonel, setfinEmbauchePersonel] = useState(""); TODO: remove if not needed
   const [contactPersonel, setContactPersonel] = useState("");
   const [salairePersonel, setSalairePersonel] = useState("");
   const [isActifPersonel, setisActifPersonel] = useState(""); //salarier en activite
@@ -25,7 +25,6 @@ function GestionPersonel() {
 
   const personelCollection = collection(db, "personel");
 
-  const now = new Date();
 
   //charger les personels depuis firestore
   useEffect(() => {
